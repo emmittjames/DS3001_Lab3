@@ -37,7 +37,6 @@ for (i in names(split_county_df)) {
     split_election_df[[j]] = new_df
   }
   county_df = do.call(rbind, split_election_df)
-  print(county_df)
   rownames(county_df) = county_df$X
   county_df$X = NULL
   democrat = county_df[county_df$party == "DEMOCRAT", ]
@@ -46,15 +45,26 @@ for (i in names(split_county_df)) {
   democrat_proportion = sum(democrat$proportionvotes) / 6
   republican_proportion = sum(republican$proportionvotes) / 6
   other_proportion = sum(other$proportionvotes) / 6
-  print(democrat_proportion + republican_proportion + other_proportion)
   county = unique(county_df$county_name)[1]
   fips = unique(county_df$county_fips)
   new_df = data.frame(county = county, fips = fips, democrat = democrat_proportion, republican = republican_proportion, other = other_proportion)
   split_county_df[[i]] = new_df
 }
 df = do.call(rbind, split_county_df)
-# write.csv(df, "presidential_party_proportions.csv", row.names = TRUE)
-# Bedford city 
+
+df2 = read.csv("nhgis_county_data/nhgis0002_ts_nominal_county.csv")
+df2 = df2[df2$STATE == "Virginia", ]
+df2 = df2[, c("COUNTY", "STATEFP", "COUNTYFP", "AV0AA2020")]
+df2$fips = paste(df2$STATEFP, df2$COUNTYFP, sep = "")
+df2$COUNTY = NULL
+df2$STATEFP = NULL
+df2$COUNTYFP = NULL
+colnames(df2)[1] = "totalpopulation"
+df = subset(df, !is.na(df$democrat))
+df2 = subset(df2, df2$totalpopulation != "")
+df = merge(df, df2, by = "fips")
+
+write.csv(df, "presidential_party_proportions.csv", row.names = TRUE)
 
 
 ```
