@@ -64,3 +64,17 @@ The project is graded based on four criteria:
   - Replication/Documentation: Is the code appropriately commented? Can the main results be replicated from the code and original data files? Are significant choices noted and explained?
 
 Each of the four criteria are equally weighted (25 points out of 100).
+
+```{r}
+
+#Make proportions
+raw_df = read.csv("voting_VA.csv")
+raw_df = raw_df[raw_df$party=="DEMOCRAT" | raw_df$party=="REPUBLICAN",]
+
+raw_df$ratio = raw_df$candidatevotes/raw_df$totalvotes
+
+df = raw_df[, c("year","county_name","county_fips","party","totalvotes","ratio")]
+
+```
+
+
