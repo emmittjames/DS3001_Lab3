@@ -1,0 +1,37 @@
+---
+title: "R Proportions"
+output: html_notebook
+---
+
+
+```{r}
+df = read.csv("voting_VA.csv")
+split_county_df = split(df, df$county_fips)
+for (i in names(split_county_df)) {
+  county_df = split_county_df[[i]]
+  split_election_df = split(county_df, county_df$year)
+  for (j in names(split_election_df)){
+    if (all(split_election_df[[j]]$year == 2020)){
+      split_candidate_df = split(split_election_df[[j]], split_election_df[[j]]$candidate)
+      for (k in names(split_candidate_df)){
+        candidatevotes = sum(split_candidate_df[[k]]$candidatevotes)
+        new_df = split_candidate_df[[k]]
+        new_row = new_df[2, ]
+        new_row$candidatevotes = candidatevotes
+        new_row$mode = "TOTAL"
+        split_candidate_df[[k]] = new_row
+      }
+      split_election_df[[j]] = do.call(rbind, split_candidate_df)
+    }
+    split_election_df[[j]]$proportionvotes = split_election_df[[j]]$candidatevotes / split_election_df[[j]]$totalvotes
+  }
+  county_df = do.call(rbind, split_election_df)
+  rownames(county_df) = county_df$X
+  county_df$X = NULL
+  print(county_df)
+  new_df = data.frame()
+}
+# In progress
+```
+
+
