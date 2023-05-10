@@ -11,6 +11,7 @@ for (i in names(split_county_df)) {
   county_df = split_county_df[[i]]
   split_election_df = split(county_df, county_df$year)
   for (j in names(split_election_df)){
+    print(split_election_df[[j]])
     if (all(split_election_df[[j]]$year == 2020)){
       split_candidate_df = split(split_election_df[[j]], split_election_df[[j]]$candidate)
       for (k in names(split_candidate_df)){
@@ -37,7 +38,6 @@ for (i in names(split_county_df)) {
     split_election_df[[j]] = new_df
   }
   county_df = do.call(rbind, split_election_df)
-  print(county_df)
   rownames(county_df) = county_df$X
   county_df$X = NULL
   democrat = county_df[county_df$party == "DEMOCRAT", ]
@@ -46,15 +46,13 @@ for (i in names(split_county_df)) {
   democrat_proportion = sum(democrat$proportionvotes) / 6
   republican_proportion = sum(republican$proportionvotes) / 6
   other_proportion = sum(other$proportionvotes) / 6
-  print(democrat_proportion + republican_proportion + other_proportion)
   county = unique(county_df$county_name)[1]
   fips = unique(county_df$county_fips)
   new_df = data.frame(county = county, fips = fips, democrat = democrat_proportion, republican = republican_proportion, other = other_proportion)
   split_county_df[[i]] = new_df
 }
 df = do.call(rbind, split_county_df)
-# write.csv(df, "presidential_party_proportions.csv", row.names = TRUE)
-# Bedford city 
+write.csv(df, "presidential_party_proportions.csv", row.names = TRUE)
 
 
 ```
