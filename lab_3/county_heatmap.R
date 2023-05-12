@@ -2,7 +2,7 @@
 library('usmap')
 library('ggplot2')
 
-adf = read.csv('county_adjacencies.csv')
+adf = read.csv('republican_county_adjacencies.csv')
 fips = adf$FIPS
 district = adf$District
 
