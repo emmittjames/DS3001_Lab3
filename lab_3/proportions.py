@@ -6,8 +6,8 @@ county_data = pd.read_csv("counties_with_adjancencies.csv")
 
 graph = nx.Graph()
 for idx, row in county_data.iterrows():
-    graph.add_node(row['county'], population=row['totalpopulation'], democrat=row['democrat'], republican=row['republican'], other=row['other'])
-    neighbors = row[5:].dropna().values
+    graph.add_node(row['county'], FIPS=row['FIPS'], population=row['totalpopulation'], democrat=row['democrat'], republican=row['republican'], other=row['other'])
+    neighbors = row[6:].dropna().values
     for neighbor in neighbors:
         graph.add_edge(row['county'], neighbor)
 
